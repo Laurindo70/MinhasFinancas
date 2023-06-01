@@ -5,11 +5,11 @@ namespace MinhasFinancas.Domain
     public class DomainStandard
     {
         public Guid Id { get; set; }
-        public DateTime CriadoEm { get; set; }
-        [ForeignKey("CriadoPor")]
-        public virtual User UsuarioCriado { get; set; }
-        public DateTime AtualizadoEm { get; set; }
-        [ForeignKey("UltimaAtualizacaoPor")]
-        public virtual User UsuarioAtualizado { get; set; }
+        public DateTime? Created_at { get; set; }
+        [ForeignKey("User_created")]
+        public virtual User UserCreated { get; set; }
+        public DateTime? Updated_at { get; set; }
+        [ForeignKey("User_updated")]
+        public virtual User UserUpdated { get; set; }
     }
 }

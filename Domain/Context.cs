@@ -18,22 +18,24 @@ namespace MinhasFinancas.Domain
                 .HasMaxLength(255)
                 .IsRequired();
             modelBuilder.Entity<User>()
-                .Property(u => u.Senha)
+                .Property(u => u.Password)
                 .HasMaxLength(255)
                 .IsRequired();
             modelBuilder.Entity<User>()
-                .Property(u => u.Nome)
+                .Property(u => u.Name)
                 .HasMaxLength(150)
                 .IsRequired();
             modelBuilder.Entity<User>()
-                .Property(u => u.AtivaPorEmail)
+                .Property(u => u.Activated_by_email)
                 .HasDefaultValue(false);
             modelBuilder.Entity<User>()
-                .Property(u => u.ContaAtivada)
+                .Property(u => u.Account_activated)
                 .HasDefaultValue(true);
             modelBuilder.Entity<User>()
-                .Property(u => u.CriadoEm)
+                .Property(u => u.Created_at)
                 .HasDefaultValueSql("now()");
         }
+
+
     }
 }

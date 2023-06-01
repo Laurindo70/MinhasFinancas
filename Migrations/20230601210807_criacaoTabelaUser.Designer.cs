@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MinhasFinancas.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20230531201009_atualizandoCamposUsuario")]
-    partial class atualizandoCamposUsuario
+    [Migration("20230601210807_criacaoTabelaUser")]
+    partial class criacaoTabelaUser
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,71 +25,73 @@ namespace MinhasFinancas.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("MinhasFinancas.Models.Usuario", b =>
+            modelBuilder.Entity("MinhasFinancas.Domain.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<bool>("AtivaPorEmail")
-                        .HasColumnType("boolean");
+                    b.Property<bool>("Account_activated")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
 
-                    b.Property<DateTime>("AtualizadoEm")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<bool>("Activated_by_email")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
-                    b.Property<bool>("ContaAtivada")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime>("CriadoEm")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("CriadoPor")
-                        .HasColumnType("uuid");
+                    b.Property<DateTime>("Created_at")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("now()");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
-                    b.Property<string>("Nome")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
-                    b.Property<string>("Senha")
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
-                    b.Property<Guid>("UltimaAtualizacaoPor")
+                    b.Property<DateTime>("Updated_at")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("User_created")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("User_updated")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CriadoPor");
+                    b.HasIndex("User_created");
 
-                    b.HasIndex("UltimaAtualizacaoPor");
+                    b.HasIndex("User_updated");
 
-                    b.ToTable("Usuario");
+                    b.ToTable("User");
                 });
 
-            modelBuilder.Entity("MinhasFinancas.Models.Usuario", b =>
+            modelBuilder.Entity("MinhasFinancas.Domain.User", b =>
                 {
-                    b.HasOne("MinhasFinancas.Models.Usuario", "UsuarioCriado")
+                    b.HasOne("MinhasFinancas.Domain.User", "UserCreated")
                         .WithMany()
-                        .HasForeignKey("CriadoPor")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("User_created");
 
-                    b.HasOne("MinhasFinancas.Models.Usuario", "UsuarioAtualizado")
+                    b.HasOne("MinhasFinancas.Domain.User", "UserUpdated")
                         .WithMany()
-                        .HasForeignKey("UltimaAtualizacaoPor")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("User_updated");
 
-                    b.Navigation("UsuarioAtualizado");
+                    b.Navigation("UserCreated");
 
-                    b.Navigation("UsuarioCriado");
+                    b.Navigation("UserUpdated");
                 });
 #pragma warning restore 612, 618
         }
