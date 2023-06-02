@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MinhasFinancas.Domain;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MinhasFinancas.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20230602135519_tabelaConta")]
+    partial class tabelaConta
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,53 +24,6 @@ namespace MinhasFinancas.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("MinhasFinancas.Domain.Account", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<double>("Amount_received_per_month")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("Available_value")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("double precision")
-                        .HasDefaultValue(0.0);
-
-                    b.Property<DateTime?>("Created_at")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("now()");
-
-                    b.Property<Guid?>("Responsible_user")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("Updated_at")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("User_created")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("User_updated")
-                        .HasColumnType("uuid");
-
-                    b.Property<double>("Value_credit")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("double precision")
-                        .HasDefaultValue(0.0);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Responsible_user");
-
-                    b.HasIndex("User_created");
-
-                    b.HasIndex("User_updated");
-
-                    b.ToTable("Account");
-                });
 
             modelBuilder.Entity("MinhasFinancas.Domain.User", b =>
                 {
@@ -121,27 +77,6 @@ namespace MinhasFinancas.Migrations
                     b.HasIndex("User_updated");
 
                     b.ToTable("User");
-                });
-
-            modelBuilder.Entity("MinhasFinancas.Domain.Account", b =>
-                {
-                    b.HasOne("MinhasFinancas.Domain.User", "ResponsibleUser")
-                        .WithMany()
-                        .HasForeignKey("Responsible_user");
-
-                    b.HasOne("MinhasFinancas.Domain.User", "UserCreated")
-                        .WithMany()
-                        .HasForeignKey("User_created");
-
-                    b.HasOne("MinhasFinancas.Domain.User", "UserUpdated")
-                        .WithMany()
-                        .HasForeignKey("User_updated");
-
-                    b.Navigation("ResponsibleUser");
-
-                    b.Navigation("UserCreated");
-
-                    b.Navigation("UserUpdated");
                 });
 
             modelBuilder.Entity("MinhasFinancas.Domain.User", b =>
