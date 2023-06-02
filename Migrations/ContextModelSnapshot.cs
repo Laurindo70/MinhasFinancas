@@ -41,13 +41,13 @@ namespace MinhasFinancas.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("now()");
 
-                    b.Property<Guid?>("Responsible_user")
+                    b.Property<Guid>("Responsible_user")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime?>("Updated_at")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("User_created")
+                    b.Property<Guid>("User_created")
                         .HasColumnType("uuid");
 
                     b.Property<Guid?>("User_updated")
@@ -69,6 +69,23 @@ namespace MinhasFinancas.Migrations
                     b.ToTable("Account");
                 });
 
+            modelBuilder.Entity("MinhasFinancas.Domain.TabelsOfRelation.UserAsAccount", b =>
+                {
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("Account_id");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("User_id");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("User_has_account");
+                });
+
             modelBuilder.Entity("MinhasFinancas.Domain.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -76,11 +93,12 @@ namespace MinhasFinancas.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<bool?>("Account_activated")
+                        .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
                         .HasDefaultValue(true);
 
-                    b.Property<bool?>("Activated_by_email")
+                    b.Property<bool>("Activated_by_email")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
                         .HasDefaultValue(false);
@@ -92,23 +110,20 @@ namespace MinhasFinancas.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)");
+                        .HasColumnType("varchar(150)");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<DateTime?>("Updated_at")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("User_created")
+                    b.Property<Guid>("User_created")
                         .HasColumnType("uuid");
 
                     b.Property<Guid?>("User_updated")
@@ -127,11 +142,15 @@ namespace MinhasFinancas.Migrations
                 {
                     b.HasOne("MinhasFinancas.Domain.User", "ResponsibleUser")
                         .WithMany()
-                        .HasForeignKey("Responsible_user");
+                        .HasForeignKey("Responsible_user")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("MinhasFinancas.Domain.User", "UserCreated")
                         .WithMany()
-                        .HasForeignKey("User_created");
+                        .HasForeignKey("User_created")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("MinhasFinancas.Domain.User", "UserUpdated")
                         .WithMany()
@@ -144,11 +163,32 @@ namespace MinhasFinancas.Migrations
                     b.Navigation("UserUpdated");
                 });
 
+            modelBuilder.Entity("MinhasFinancas.Domain.TabelsOfRelation.UserAsAccount", b =>
+                {
+                    b.HasOne("MinhasFinancas.Domain.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MinhasFinancas.Domain.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("MinhasFinancas.Domain.User", b =>
                 {
                     b.HasOne("MinhasFinancas.Domain.User", "UserCreated")
                         .WithMany()
-                        .HasForeignKey("User_created");
+                        .HasForeignKey("User_created")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("MinhasFinancas.Domain.User", "UserUpdated")
                         .WithMany()
