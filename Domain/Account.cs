@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MinhasFinancas.Domain.TabelsOfRelation;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MinhasFinancas.Domain
@@ -12,9 +13,13 @@ namespace MinhasFinancas.Domain
         public Double Amount_received_per_month { get; set; }
         [Required]
         public Double Value_credit { get; set; }
-        [ForeignKey("Responsible_user")]
-        [Required]
-        public virtual User ResponsibleUser { get; set; }
+
+        //Relãção de muitos para muitos - usuarios;
+        public List<User> Users { get; } = new();
+
+        //Relação de um para muitos - usuarios;
+        public Guid Responsible_user { get; set; }
+        public User User { get; set; } = null!; 
 
     }
 }

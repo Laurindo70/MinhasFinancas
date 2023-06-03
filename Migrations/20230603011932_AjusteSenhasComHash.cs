@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MinhasFinancas.Migrations
 {
     /// <inheritdoc />
-    public partial class ajusteDeTabelas : Migration
+    public partial class AjusteSenhasComHash : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,28 +18,16 @@ namespace MinhasFinancas.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "varchar(150)", nullable: false),
                     Email = table.Column<string>(type: "varchar(255)", nullable: false),
-                    Activated_by_email = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
-                    Account_activated = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
-                    Password = table.Column<string>(type: "varchar(255)", nullable: false),
+                    Activated_by_email = table.Column<bool>(type: "boolean", nullable: true, defaultValue: false),
+                    Account_activated = table.Column<bool>(type: "boolean", nullable: true, defaultValue: true),
+                    Password = table.Column<byte[]>(type: "bytea", nullable: false),
+                    Password_salt = table.Column<byte[]>(type: "bytea", nullable: true),
                     Created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true, defaultValueSql: "now()"),
-                    User_created = table.Column<Guid>(type: "uuid", nullable: false),
-                    Updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    User_updated = table.Column<Guid>(type: "uuid", nullable: true)
+                    Updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_User", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_User_User_User_created",
-                        column: x => x.User_created,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_User_User_User_updated",
-                        column: x => x.User_updated,
-                        principalTable: "User",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -52,9 +40,7 @@ namespace MinhasFinancas.Migrations
                     Value_credit = table.Column<double>(type: "double precision", nullable: false, defaultValue: 0.0),
                     Responsible_user = table.Column<Guid>(type: "uuid", nullable: false),
                     Created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true, defaultValueSql: "now()"),
-                    User_created = table.Column<Guid>(type: "uuid", nullable: false),
-                    Updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    User_updated = table.Column<Guid>(type: "uuid", nullable: true)
+                    Updated_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -65,17 +51,6 @@ namespace MinhasFinancas.Migrations
                         principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Account_User_User_created",
-                        column: x => x.User_created,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Account_User_User_updated",
-                        column: x => x.User_updated,
-                        principalTable: "User",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -87,6 +62,7 @@ namespace MinhasFinancas.Migrations
                 },
                 constraints: table =>
                 {
+                    table.PrimaryKey("PK_User_has_account", x => new { x.Account_id, x.User_id });
                     table.ForeignKey(
                         name: "FK_User_has_account_Account_Account_id",
                         column: x => x.Account_id,
@@ -105,31 +81,6 @@ namespace MinhasFinancas.Migrations
                 name: "IX_Account_Responsible_user",
                 table: "Account",
                 column: "Responsible_user");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Account_User_created",
-                table: "Account",
-                column: "User_created");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Account_User_updated",
-                table: "Account",
-                column: "User_updated");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_User_User_created",
-                table: "User",
-                column: "User_created");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_User_User_updated",
-                table: "User",
-                column: "User_updated");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_User_has_account_Account_id",
-                table: "User_has_account",
-                column: "Account_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_User_has_account_User_id",
